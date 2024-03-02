@@ -15,7 +15,6 @@ public class MatchingPool extends Thread{
     private  static List<Player> players = new ArrayList<>();
     private final ReentrantLock lock = new ReentrantLock();//用于线程加锁
     private static RestTemplate restTemplate;//注解
-    private final static String startGameUrl = "http://127.0.0.1:3000/pk/start/game/";
 
     @Autowired
     public void setRestTemplate(RestTemplate restTemplate){
@@ -23,10 +22,10 @@ public class MatchingPool extends Thread{
     }
 
 
-    public void addPlayer(Integer userId, Integer rating){
+    public void addPlayer(Integer userId, Integer rating, Integer botId){
         lock.lock();
         try{
-            players.add(new Player(userId, rating, 0));
+            players.add(new Player(userId, rating,botId, 0));
         }finally {
             lock.unlock();
         }
@@ -62,8 +61,9 @@ public class MatchingPool extends Thread{
     private void sendResult(Player a, Player b){//返回匹配结果
         MultiValueMap<String, String> data = new LinkedMultiValueMap<>();
         data.add("a_id", a.getUserId().toString());
+        data.add("a_bot_id", a.getBotId().toString());
         data.add("b_id", b.getUserId().toString());
-        System.out.println("已经进行到发送result的部分啦");
+        data.add("b_bot_id", b.getBotId().toString());
         //向backend发送匹配上的两名玩家的信息
         restTemplate.postForObject("http://localhost:3000/pk/start/game/", data, String.class);
     }

@@ -140,7 +140,7 @@ public class Game extends Thread{//实现多线程
     }
 
     private String getInput(Player player){//将当前的局面信息编码成一个字符串
-        //地图#me.sx#me.sy#我的操作#you.sx#you.sy#对手的操作
+        //地图#me.sx#me.sy#(我的操作)#you.sx#you.sy#(对手的操作)
         Player me, you;
         if(playerA.getId().equals(player.getId())){
             me = playerA;
@@ -149,8 +149,15 @@ public class Game extends Thread{//实现多线程
             me = playerB;
             you = playerA;
         }
-        return "";
+        return getMapString() + "#" +
+                me.getSx() + "#" +
+                me.getSy() + "#(" +
+                me.getStepsString() + ")#" +
+                you.getSx() + "#" +
+                you.getSy() + "#(" +
+                you.getStepsString() + ")";
     }
+
     private void sendBotCode(Player player){
         if(player.getBotId().equals(-1))return;
         MultiValueMap<String, String> data = new LinkedMultiValueMap<>();

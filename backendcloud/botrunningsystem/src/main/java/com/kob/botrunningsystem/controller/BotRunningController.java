@@ -15,6 +15,7 @@ public class BotRunningController {
     private BotRunningService botRunningService;
     @PostMapping("/bot/add/")
     public String addBot(@RequestParam MultiValueMap<String, String> data){
+        System.out.println("这里是botrunning的controller地方" + data);
         Integer userId = Integer.parseInt(Objects.requireNonNull(data.getFirst("user_id")));
         String botCode = data.getFirst("bot_code");
         String input = data.getFirst("input");

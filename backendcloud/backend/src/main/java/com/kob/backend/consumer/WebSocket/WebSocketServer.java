@@ -29,7 +29,7 @@ public class WebSocketServer {
 
     //每个连接链接使用session来维护的
     private Session session = null;
-    private Game game = null;
+    public Game game = null;
     private static UserMapper userMapper;
     public static RecordMapper recordMapper;
     private static BotMapper botMapper;

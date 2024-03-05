@@ -275,4 +275,8 @@ export default{
 button{
     margin: 5px 5px 5px 5px;
 }
+td, th {
+  text-align: center; /* 设置单元格内容居中对齐 */
+  padding: 8px; /* 设置单元格内边距 */
+}
 </style>

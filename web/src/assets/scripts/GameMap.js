@@ -39,22 +39,47 @@ export class GameMap extends AcGameObject{
     }
 
     add_listening_events(){//监听键盘输入
-        this.ctx.canvas.focus();
-        
-        this.ctx.canvas.addEventListener("keydown", e =>{
-            let d = -1;
-            if(e.key === 'w')     d = 0;
-            else if(e.key === 'd') d = 1;
-            else if(e.key === 's') d = 2;
-            else if(e.key === 'a') d = 3;
+        if(this.store.state.record.is_record){
+            let k = 0;
+            const a_step = this.store.state.record.a_step;
+            const b_step = this.store.state.record.b_step;
+            console.log(a_step, b_step);
+            const loser =  this.store.state.record.record_loser;
+            const [snake0,snake1] = this.snakes;
+            const inerval_id = setInterval(() => {
+                if(k >= a_step.length-1){
+                    if(loser === "All" || loser === "A"){
+                        snake0.status = "die";
+                    }
+                    if(loser === "All" || loser === "B"){
+                        snake1.status = "die";
+                    }
+                    clearInterval(inerval_id);
+                }else{
+                    snake0.set_direction(parseInt(a_step[k]));
+                    snake1.set_direction(parseInt(b_step[k]));
+                }
+                k++;
+            },300)
+            
+        }else{
+            this.ctx.canvas.focus();
+            this.ctx.canvas.addEventListener("keydown", e =>{
+                let d = -1;
+                if(e.key === 'w')     d = 0;
+                else if(e.key === 'd') d = 1;
+                else if(e.key === 's') d = 2;
+                else if(e.key === 'a') d = 3;
 
-            if(d >= 0){
-                this.store.state.pk.socket.send(JSON.stringify({
-                    event: "move",
-                    direction: d,
-                }));
-            }
-        });
+                if(d >= 0){
+                    this.store.state.pk.socket.send(JSON.stringify({
+                        event: "move",
+                        direction: d,
+                    }));
+                }
+            });
+        }
+
     }
 
     start() {

@@ -1,13 +1,9 @@
 <template>
-<PlayGround v-if="$store.state.pk.status === 'playing'">
-    
-</PlayGround>
-<MatchGround v-if="$store.state.pk.status === 'matching'">
-
-</MatchGround>
-<ResultBoard v-if="$store.state.pk.loser !== 'none'">
-    
-</ResultBoard>
+<PlayGround v-if="$store.state.pk.status === 'playing'"> </PlayGround>
+<MatchGround v-if="$store.state.pk.status === 'matching'"></MatchGround>
+<ResultBoard v-if="$store.state.pk.loser !== 'none'">  </ResultBoard>
+<div class="user-color" v-if="parseInt($store.state.user.id) === parseInt($store.state.pk.a_id)">左下角</div>
+<div class="user-color" v-if="parseInt($store.state.user.id) === parseInt($store.state.pk.b_id)">右上角</div>
 </template>
 
 <script>

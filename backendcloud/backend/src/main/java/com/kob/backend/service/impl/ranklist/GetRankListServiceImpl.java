@@ -19,7 +19,7 @@ public class GetRankListServiceImpl implements GetRankListService {
     private UserMapper userMapper;
     @Override
     public JSONObject getlist(Integer page) {
-        IPage<User> userIPage = new Page<>(page, 3);//每个分页有十条记录，返回page页的内容
+        IPage<User> userIPage = new Page<>(page, 3);//每个分页有3条记录，返回page页的内容
         QueryWrapper<User> queryWrapper = new QueryWrapper<>();
         queryWrapper.orderByAsc("id");//按照id的降序排序
         List<User> users = userMapper.selectPage(userIPage, queryWrapper).getRecords();

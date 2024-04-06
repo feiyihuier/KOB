@@ -5,6 +5,8 @@
                 <tr>
                     <th>用户</th>
                     <th>分数</th>
+                    <th>点赞数</th>
+                    <th></th>
                 </tr>
             </thead>
             <tbody>
@@ -15,6 +17,11 @@
                         <span class="user-username">{{ user.username }}</span>
                     </td>
                     <td><span class="-result">{{ user.rating }}</span></td>
+                    <td><span class="-result">{{ user.likes }}</span></td>
+                    <td>
+                        <button type="submit" v-if="!userMap.get(user.id)" class="btn btn-outline-primary" @click="change_like(user.id)">点个赞吧</button>
+                        <button type="submit" v-if="userMap.get(user.id)" class="btn btn-outline-primary" @click="change_like(user.id)">已赞</button>
+                    </td>
                 </tr>
             </tbody>
         </table>
@@ -46,12 +53,15 @@ export default{
     components:{
         ContentField,
     },
+
+   
     setup(){
         const store = useStore();
         let users = ref([]);
         let current_page = 1;
         let total_users = 0;
         let pages = ref([]);
+        const userMap = new Map();
 
         const update__pages = () =>{
             let max_pages = parseInt(Math.ceil(total_users / 3));
@@ -77,7 +87,7 @@ export default{
             }
         }
 
-        const pull_page = page =>{
+        const pull_page = page =>{//拉取当前页面的用户
             $.ajax({
                 url:"http://localhost:3000/rank/getlist/",
                 type:"GET",
@@ -89,9 +99,10 @@ export default{
                 },
                 success(resp){
                    console.log(resp);
-                   users.value = resp.users;
+                   users.value = resp.users;//把当前页面用户存下来
                    total_users = resp.users_count;
-                   update__pages();
+                   statusmap();
+                   update__pages(); 
                 },
                 error(resp){
                     console.log(resp);
@@ -99,13 +110,58 @@ export default{
             })
         }
         pull_page(current_page);
-
         
+        const statusmap = () =>{
+            for (const user of users.value) {
+                    $.ajax({
+                    url:"http://localhost:3000/like/ask/",
+                    type:"POST",
+                    data:{
+                        givelikeid:store.state.user.id,
+                        getlikeid:user.id
+                    },
+                    headers:{
+                        Authorization: "Bearer " + store.state.user.token,
+                    },
+                    success(resp){
+                        userMap.set(user.id, resp);
+                    },
+                    error(resp){
+                        console.log(resp);
+                    }
+                })
+            }
+        }
+
+        const change_like = getlikeid =>{
+        console.log("点击了点赞按钮");
+            $.ajax({
+                url:"http://localhost:3000/like/change/",
+                type:"POST",
+                data:{
+                    givelikeid:store.state.user.id,
+                    getlikeid:getlikeid
+                 },
+                headers:{
+                    Authorization: "Bearer " + store.state.user.token,
+                },
+                success(resp){
+                    userMap.set(getlikeid, resp);
+                    window.location.reload(); // 刷新整个页面
+                    statusmap();
+                },
+                error(resp){
+                    console.log(resp);
+                }
+            })
+        }
         return {
             users,
             current_page,
             pages,
             click_page,
+            change_like,
+            userMap
         }
         
     }

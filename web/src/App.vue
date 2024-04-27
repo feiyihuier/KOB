@@ -17,8 +17,8 @@ export default{
 }
 </script>
 <style>
-  body {
+body{
       background-image: url("@/assets/img/background.webp");
       background-size: cover;
-  }
+}
 </style>

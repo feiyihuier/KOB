@@ -1,5 +1,5 @@
 package com.kob.backend.config;
-//实现config.SecurityConfig类，用来实现用户密码的加密存储
+//实现config.SecurityConfig类，用来实现鉴权
 
 import com.kob.backend.config.filter.JwtAuthenticationTokenFilter;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -40,7 +40,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .and()
                 .authorizeRequests()
                 //以下是网站公开链接
-                .antMatchers("/user/account/token/", "/user/account/register/", "/user/account/info/").permitAll()
+                .antMatchers("/**","/user/account/token/", "/user/account/register/", "/user/account/info/").permitAll()
                 .antMatchers("/pk/start/game/","/pk/receive/bot/move/").hasIpAddress("127.0.0.1")//好让matching system把匹配好的信息传递过来
                 .antMatchers(HttpMethod.OPTIONS).permitAll()
                 .anyRequest().authenticated();
